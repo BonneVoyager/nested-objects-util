@@ -1,0 +1,37 @@
+{
+  "name": "nested-objects-util",
+  "version": "0.1.0",
+  "description": "A module to work with huge nested objects having circular dependencies.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bonnevoyager/nested-objects-util"
+  },
+  "keywords": [
+    "object",
+    "obj",
+    "json",
+    "deep-keys",
+    "nested-keys",
+    "nested-object",
+    "flatten-object",
+    "find-key",
+    "find-value",
+    "filter-value",
+    "circular-references"
+  ],
+  "author": "Krzysztof Gutkowski",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/bonnevoyager/nested-objects-util/issues"
+  },
+  "homepage": "https://github.com/bonnevoyager/nested-objects-util",
+  "dependencies": {},
+  "devDependencies": {
+    "assert": "^1.4.1",
+    "mocha": "^4.0.1"
+  },
+  "scripts": {
+    "test": "mocha test.js"
+  }
+}
