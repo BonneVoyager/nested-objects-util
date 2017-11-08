@@ -106,4 +106,46 @@ describe('nested-objects-util', function() {
     });
   });
 
+  it('should return flattened, formatted and stringified json (no circular references)' , function() {
+    var a = {
+      b: 1,
+      c: {
+        d: 2,
+        e: 2
+      }
+    };
+    var obj = nestedObjectsUtil.discardCircular(a, true);
+    var json = nestedObjectsUtil.downloadStringified(obj);
+    assert.deepEqual(json, '{\n  "b": 1,\n  "c": {\n    "d": 2,\n    "e": 2\n  }\n}');
+  });
+
+  it('should return flattened, formatted and stringified json (circular references)' , function() {
+    var a = {
+      b: 1,
+      c: {
+        d: 2,
+        e: 2
+      }
+    };
+    a.f = a;
+    a.g = a.f;
+    var obj = nestedObjectsUtil.discardCircular(a, true);
+    var json = nestedObjectsUtil.downloadStringified(obj);
+    assert.deepEqual(json, '{\n  "b": 1,\n  "c": {\n    "d": 2,\n    "e": 2\n  },\n  "f": "~",\n  "g": "~"\n}');
+  });
+
+  it('should return filtered, flattened, formatted and stringified json (circular references)' , function() {
+    var a = {
+      b: 1,
+      c: {
+        d: 2,
+        e: 2
+      }
+    };
+    a.f = a;
+    var filtered = nestedObjectsUtil.filterValue(a, 2, true);
+    var json = nestedObjectsUtil.downloadStringified(filtered);
+    assert.deepEqual(json, '{\n  "c.d": 2,\n  "c.e": 2\n}');
+  });
+
 });

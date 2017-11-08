@@ -1,8 +1,10 @@
 # nested-objects-util
 
-A module to work with huge nested objects having circular dependencies.
+A module to work with huge nested objects having circular references.
 
-It was implemented to filter out some values from huge nested objects with circular references both from nodejs and browser.
+It was implemented to filter out some values from huge nested objects with circular references.
+
+It's designed to work both on nodejs and browser.
 
 ## Installation
 
@@ -82,7 +84,7 @@ nestedObjectsUtil.accessProperty('keyA.keyB.keyC', nestedObject);
 returns:
 
 ```js
-value
+"value"
 ```
 
 #### nestedObjectsUtil.discardCircular(Object: object) returns {Object}
@@ -106,7 +108,7 @@ returns:
 }
 ```
 
-#### nestedObjectsUtil.filterValue(Object: object, String: query, Boolean: flattenFlag = false) returns {Object}
+#### nestedObjectsUtil.filterValue(Object: object, Various: query, Boolean: flattenFlag = false) returns {Object}
 
 Filter a nested object by value (with strict comparison performed).
 
@@ -136,7 +138,7 @@ returns:
   "b": {
     "c": "str"
   },
-  e: "str",
+  "e": "str",
   "f": {
     "g": {
       "h": "str"
@@ -161,11 +163,43 @@ returns:
 }
 ```
 
-## Browser usage
+#### nestedObjectsUtil.downloadStringified(Object: object, Number: space = 2) returns {[String | undefined]}
 
-Module can be used in the browser as well.
+On browser with HTML5 download API: stringify, format and download the object.
 
-Filter and download some huge object via HTML5 API (if supported) with:
+Else: return stringified text. 
+
+```
+var a = {
+  b: 1,
+  c: {
+    d: 2,
+    e: 2
+  }
+};
+a.f = a;
+a.g = a.f;
+var obj = nestedObjectsUtil.discardCircular(a);
+nestedObjectsUtil.downloadStringified(obj);
+```
+
+returns:
+
+```js
+{
+  "b": 1,
+  "c": {
+    "d": 2,
+    "e": 2
+  },
+  "f": "~",
+  "g": "~"
+}
+```
+
+## Example browser usage
+
+Filter out 'abcd' value from the flattened object and download stringified json via HTML5 API with:
 
 ```js
 const object = NestedObjectsUtil.filterValue(App.SomeHugeObject, 'abcd', true);

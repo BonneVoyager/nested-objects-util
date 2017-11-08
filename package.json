@@ -1,8 +1,8 @@
 {
   "name": "nested-objects-util",
   "version": "0.1.0",
-  "description": "A module to work with huge nested objects having circular dependencies.",
-  "main": "index.js",
+  "description": "A module to work with huge nested objects having circular references.",
+  "main": "index.min.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/bonnevoyager/nested-objects-util"
