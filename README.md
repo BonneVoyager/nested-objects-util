@@ -18,7 +18,7 @@ npm install --save nested-objects-util
 const nestedObjectsUtil = require('nested-objects-util');
 ```
 
-#### nestedObjectsUtil.flatten(Object: object) returns {Object}
+#### nestedObjectsUtil.flatten(Object: object): Object
 
 Flatten object by keys composed from own nested properties.
 
@@ -29,7 +29,8 @@ nestedObjectsUtil.flatten({
       keyC: 'value'
     },
     keyD: 'value2'
-  } 
+  },
+  keyE: [ 'value3', 'value4' ]
 })
 ```
 
@@ -38,11 +39,13 @@ returns:
 ```js
 {
   "keyA.keyB.keyC": "value",
-  "keyA.keyD": "value2"
+  "keyA.keyD": "value2",
+  "keyA.keyE.0": "value3",
+  "keyA.keyE.1": "value4"
 }
 ```
 
-#### nestedObjectsUtil.unflatten(Object: object) returns {Object}
+#### nestedObjectsUtil.unflatten(Object: object): Object
 
 Unflatten object by keys composed from own nested properties.
 
@@ -66,7 +69,7 @@ returns:
   }
 ```
 
-#### nestedObjectsUtil.accessProperty([String | Array]: keys, Object: parent = global | window) returns {Various}
+#### nestedObjectsUtil.accessProperty(String | Array: keys, Object: parent = global | window): Various
 
 Access object's nested property.
 
@@ -87,7 +90,7 @@ returns:
 "value"
 ```
 
-#### nestedObjectsUtil.discardCircular(Object: object) returns {Object}
+#### nestedObjectsUtil.discardCircular(Object: object): Object
 
 Discard circular references (to avoid "Converting circular structure to JSON" error).
 
@@ -108,7 +111,7 @@ returns:
 }
 ```
 
-#### nestedObjectsUtil.filterValue(Object: object, Various: query, Boolean: flattenFlag = false) returns {Object}
+#### nestedObjectsUtil.filterValue(Object: object, Various: query, Boolean: flattenFlag = false): Object
 
 Filter a nested object by value (with strict comparison performed).
 
@@ -163,7 +166,7 @@ returns:
 }
 ```
 
-#### nestedObjectsUtil.downloadStringified(Object: object, Number: space = 2) returns {[String | undefined]}
+#### nestedObjectsUtil.downloadStringified(Object: object, Number: space = 2): String | undefined
 
 On browser with HTML5 download API: stringify, format and download the object.
 

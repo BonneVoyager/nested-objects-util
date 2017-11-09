@@ -11,12 +11,15 @@ describe('nested-objects-util', function() {
         keyB: {
           keyC: 'value'
         },
-        keyD: 'value2'
+        keyD: 'value2',
+        keyE: [ 'value3', 'value4' ]
       }
     });
     assert.deepEqual(flattened, {
       'keyA.keyB.keyC': 'value',
-      'keyA.keyD': 'value2'
+      'keyA.keyD': 'value2',
+      'keyA.keyE.0': 'value3',
+      'keyA.keyE.1': 'value4'
     });
   });
 
