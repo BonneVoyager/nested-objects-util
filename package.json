@@ -1,6 +1,6 @@
 {
   "name": "nested-objects-util",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A module to work with huge nested objects having circular references.",
   "main": "index.min.js",
   "repository": {
