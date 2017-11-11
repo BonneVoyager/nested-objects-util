@@ -96,7 +96,9 @@ function generateReplacer(value) {
 
 function accessProperty(keys, parent) {
   var i, key;
-  keys = keys.split('.');
+  if (typeof keys === 'string') {
+    keys = keys.split('.');
+  }
   parent = parent || (typeof window !== 'undefined' ? window : global);
 
   for (i = 0; i < keys.length; i++) {

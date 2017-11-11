@@ -1,0 +1,17 @@
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+.Trashes
+.Spotlight-V100
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.tmp
+.env
+.idea
+npm-debug.log*
+package-lock.json
+node_modules
+RESET
