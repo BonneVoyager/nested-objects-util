@@ -1,12 +1,21 @@
 (function() {
 
 var isArray = Array.isArray || (Array.isArray = function(a) {
-  return '' + a !== a && {}.toString.call(a) === '[object Array]';
+  return ''+a!==a&&{}.toString.call(a)==='[object Array]';
 });
+
+var indexOf = [].indexOf || function(elt/*,from*/) {
+  var len=this.length>>>0;
+  var from=Number(arguments[1])||0;
+  from=(from<0)?Math.ceil(from):Math.floor(from);
+  if(from<0)from+=len;
+  for(;from<len;from++){if(from in this&&this[from]===elt)return from}
+  return -1;
+}
 
 // based on Bergi's https://stackoverflow.com/questions/19098797/fastest-way-to-flatten-un-flatten-nested-json-objects
 
-function flatten(data) {
+function flatten(data, sortKeysFlag) {
   var result = {};
   function recurse (cur, prop) {
     if (Object(cur) !== cur) {
@@ -28,7 +37,17 @@ function flatten(data) {
     }
   }
   recurse(data, "");
-  return result;
+
+  if (sortKeysFlag) {
+    var ordered = {}, orderedKeys = Object.keys(result).sort(), i = 0, key;
+    for (;i<orderedKeys.length; i++) {
+      key = orderedKeys[i];
+      ordered[key] = result[key];
+    }
+    return ordered;
+  } else {
+    return result;
+  }
 }
 
 function unflatten(data) {
@@ -40,8 +59,8 @@ function unflatten(data) {
   for(var p in data) {
     cur = result, prop = "", last = 0;
     do {
-      idx = p.indexOf(".", last);
-      temp = p.substring(last, idx !== -1 ? idx : undefined);
+      idx = indexOf.call(p, ".", last);
+      temp = p.substring(last, ~idx ? idx : undefined);
       cur = cur[prop] || (cur[prop] = (!isNaN(parseInt(temp)) ? [] : {}));
       prop = temp;
       last = idx + 1;
@@ -54,14 +73,8 @@ function unflatten(data) {
 // JSON.stringify generator based on https://github.com/WebReflection/circular-json
 
 var specialChar = '~',
-  safeSpecialChar = '\\x' + (
-    '0' + specialChar.charCodeAt(0).toString(16)
-  ).slice(-2),
-  specialCharRG = new RegExp(safeSpecialChar, 'g'),
-  indexOf = [].indexOf || function(v){
-    for(var i=this.length;i--&&this[i]!==v;);
-    return i;
-  };
+  safeSpecialChar = '\\x' + ('0' + specialChar.charCodeAt(0).toString(16)).slice(-2),
+  specialCharRG = new RegExp(safeSpecialChar, 'g');
 
 function generateReplacer(value) {
   var resolve = true, path = [], all  = [value], seen = [value], mapp = [resolve ? specialChar : '[Circular]'],
@@ -76,7 +89,7 @@ function generateReplacer(value) {
         last = this;
       }
       if (typeof value === 'object' && value) {
-        if (indexOf.call(all, value) < 0) {
+        if (!~indexOf.call(all, value)) {
           all.push(last = value);
         }
         lvl = all.length;
@@ -113,25 +126,25 @@ function accessProperty(keys, parent) {
   return parent;
 }
 
-function discardCircular(object, parseToObject) {
-  if (parseToObject) {
-    return JSON.parse(JSON.stringify(object, generateReplacer(object)));
-  } else {
+function discardCircular(object, stringifyFlag) {
+  if (stringifyFlag) {
     return JSON.stringify(object, generateReplacer(object));
+  } else {
+    return JSON.parse(JSON.stringify(object, generateReplacer(object)));
   }
 }
 
 function filterValue(object, query, flattenFlag) {
-  object = discardCircular(object, true);
+  object = discardCircular(object);
   object = flatten(object);
 
-  var result = {};
+  var result = {}, multipleQueries = isArray(query), value;
   for (var key in object) {
-    if (object[key] === query) {
-      result[key] = query;
+    value = object[key];
+    if ((multipleQueries && ~indexOf.call(query, value)) || object[key] === query) {
+      result[key] = value;
     }
   }
-
   if (!flattenFlag) {
     return unflatten(result);
   } else {
@@ -143,8 +156,7 @@ function downloadStringified(object, space) {
   var string = JSON.stringify(object, null, space || 2);
 
   if (typeof document !== 'undefined') {
-    var file = new Blob([ string ], { type: 'text/plain' });
-    var a = document.createElement('a');
+    var file = new Blob([ string ], { type: 'text/plain' }), a = document.createElement('a');
     if (typeof Blob !== 'undefined' && typeof URL.createObjectURL === 'function' && typeof a.download !== 'undefined') {
       a.href = URL.createObjectURL(file);
       a.download = 'object.txt';
@@ -156,13 +168,44 @@ function downloadStringified(object, space) {
   return string;
 }
 
+function areObjectsEqual(objectA, objectB) {
+  objectA = discardCircular(objectA);
+  objectA = flatten(objectA, true);
+  objectB = discardCircular(objectB);
+  objectB = flatten(objectB, true);
+  return JSON.stringify(objectA) === JSON.stringify(objectB);
+}
+
+function getObjectsDiff(objectA, objectB, sortKeysFlag, flattenFlag) {
+  objectA = discardCircular(objectA);
+  objectA = flatten(objectA, !!sortKeysFlag);
+  objectB = discardCircular(objectB);
+  objectB = flatten(objectB, !!sortKeysFlag);
+
+  var diff = {}, keys = Object.keys(objectA), i = 0, key;
+  for (; i < keys.length; i++) {
+    key = keys[i];
+    if (objectA[key] !== objectB[key]) {
+      diff[key] = objectB[key];
+    }
+  }
+
+  if (flattenFlag) {
+    return diff;
+  } else {
+    return unflatten(diff);
+  }
+}
+
 var nestedObjectsUtil = {
   unflatten: unflatten,
   flatten: flatten,
   accessProperty: accessProperty,
   discardCircular: discardCircular,
   filterValue: filterValue,
-  downloadStringified: downloadStringified
+  downloadStringified: downloadStringified,
+  areObjectsEqual: areObjectsEqual,
+  getObjectsDiff: getObjectsDiff
 };
 
 if (typeof module !== 'undefined' && typeof module.exports !== 'undefined') {
