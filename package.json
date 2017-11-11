@@ -1,7 +1,7 @@
 {
   "name": "nested-objects-util",
   "version": "0.2.0",
-  "description": "A module to filter and diff huge nested objects having circular references.",
+  "description": "A module to filter and diff complex nested objects having circular references.",
   "main": "index.js",
   "repository": {
     "type": "git",

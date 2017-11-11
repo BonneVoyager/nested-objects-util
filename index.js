@@ -182,11 +182,18 @@ function getObjectsDiff(objectA, objectB, sortKeysFlag, flattenFlag) {
   objectB = discardCircular(objectB);
   objectB = flatten(objectB, !!sortKeysFlag);
 
-  var diff = {}, keys = Object.keys(objectA), i = 0, key;
-  for (; i < keys.length; i++) {
-    key = keys[i];
+  var diff = {}, keysA = Object.keys(objectA), keysB = Object.keys(objectB), i, key;
+
+  for (i = 0; i < keysB.length; i++) {
+    key = keysB[i];
     if (objectA[key] !== objectB[key]) {
       diff[key] = objectB[key];
+    }
+  }
+  for (i = 0; i < keysA.length; i++) {
+    key = keysA[i];
+    if (typeof objectB[key] === 'undefined') {
+      diff[key] = '{deleted}';
     }
   }
 

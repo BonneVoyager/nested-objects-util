@@ -1,10 +1,10 @@
 # nested-objects-util
 
-A module to filter and diff huge nested objects having circular references.
+A module to filter and diff complex nested objects having circular references.
 
-It was implemented to filter out some values from huge nested objects with circular references and then diff them.
+It was implemented to filter out some values from inconveniently nested objects with circular references and then diff them.
 
-It's designed to work both on nodejs and browser.
+It's designed to work both on nodejs and browser without any dependencies.
 
 ## Installation
 
@@ -253,7 +253,7 @@ true
 
 #### nestedObjectsUtil.getObjectsDiff(Object: objectA, Object: objectB, Boolean: sortKeysFlag = false, Boolean: flattenFlag = false): Object
 
-Get the properties which differ between object A and object B and return those from object B.
+Get the properties which differ between object A and object B and return only those from object B.
 
 ```
 const objectA = {
