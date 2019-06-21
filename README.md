@@ -22,7 +22,7 @@ const nestedObjectsUtil = require('nested-objects-util');
 
 Flatten object by keys composed from own nested properties.
 
-```
+```js
 nestedObjectsUtil.flatten({
   keyA: {
     keyE: [ 'value3', 'value4' ],
@@ -63,7 +63,7 @@ with sortKeys=true it would return:
 
 Unflatten object by keys composed from own nested properties.
 
-```
+```js
 nestedObjectsUtil.unflatten({
   'keyA.keyB.keyC': 'value',
   'keyA.keyD': 'value2'
@@ -87,7 +87,7 @@ returns:
 
 Access object's nested property.
 
-```
+```js
 const nestedObject = {
   keyA: {
     keyB: {
@@ -108,7 +108,7 @@ returns:
 
 Discard circular references (to avoid "Converting circular structure to JSON" error).
 
-```
+```js
 const a = {
   b: 1
 };
@@ -129,7 +129,7 @@ returns:
 
 Filter a nested object by value or values (if array passed). Strict comparison is performed.
 
-```
+```js
 const a = {
   b: {
     c: 'str',
@@ -187,9 +187,9 @@ returns:
 
 On browser with HTML5 download API: stringify, format and download the object.
 
-Else: return stringified text. 
+Else: return stringified text.
 
-```
+```js
 const a = {
   b: 1,
   c: {
@@ -221,7 +221,7 @@ returns:
 
 Compare two objects against each other (by JSON.stringify) after discarding circular references, flattening and ordering keys.
 
-```
+```js
 const objectA = {
   keyA: {
     keyB: {
@@ -255,7 +255,7 @@ true
 
 Get the properties which differ between object A and object B and return only those from object B.
 
-```
+```js
 const objectA = {
   keyA: {
     keyB: {
@@ -292,12 +292,20 @@ returns:
 
 ## Example browser usage
 
-In the browser, NestedObjectsUtil object should be exposed to either window or with AMD.
+In the browser, NestedObjectsUtil object is exposed either to window or with AMD.
 
 Filter out 'abcd' value from the flattened object and download stringified JSON via HTML5 API with:
 
 ```js
 const object = NestedObjectsUtil.filterValue(App.SomeHugeObject, 'abcd', true);
+NestedObjectsUtil.downloadStringified(object);
+```
+
+Discar circular references from the object, then flatten and download it.
+
+```js
+let object = NestedObjectsUtil.discardCircular(App.SomeHugeObject);
+object = NestedObjectsUtil.flatten(object);
 NestedObjectsUtil.downloadStringified(object);
 ```
 

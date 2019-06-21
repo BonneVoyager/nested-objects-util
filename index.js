@@ -17,7 +17,7 @@ var indexOf = [].indexOf || function(elt/*,from*/) {
 
 function flatten(data, sortKeysFlag) {
   var result = {};
-  function recurse (cur, prop) {
+  function recurse(cur, prop) {
     if (Object(cur) !== cur) {
       result[prop] = cur;
     } else if (isArray(cur)) {
@@ -116,7 +116,7 @@ function accessProperty(keys, parent) {
 
   for (i = 0; i < keys.length; i++) {
     key = keys[i];
-    if (!parent.hasOwnProperty(key)) {
+    if (!parent || (parent && !parent.hasOwnProperty(key))) {
       return;
     }
 
