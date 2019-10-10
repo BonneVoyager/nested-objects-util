@@ -29,12 +29,13 @@
     "url": "https://github.com/bonnevoyager/nested-objects-util/issues"
   },
   "homepage": "https://github.com/bonnevoyager/nested-objects-util",
-  "dependencies": {},
   "devDependencies": {
     "assert": "^2.0.0",
-    "mocha": "^6.1.4"
+    "mocha": "^6.2.1",
+    "minify": "^4.1.3"
   },
   "scripts": {
-    "test": "mocha test.js"
+    "test": "mocha *.spec.js",
+    "minify": "minify index.js > index.min.js"
   }
 }
