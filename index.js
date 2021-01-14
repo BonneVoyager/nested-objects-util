@@ -17,6 +17,16 @@ var indexOf = [].indexOf || function(elt/*,from*/) {
   return -1
 }
 
+/**
+ * Returns true, if given key is included in the blacklisted
+ * keys.
+ * @param {String} key key for check, string.
+ * @returns {Boolean}.
+ */
+function isPrototypePolluted(key) {
+  return ['__proto__', 'prototype', 'constructor'].includes(key);
+}
+
 // based on Bergi's https://stackoverflow.com/questions/19098797/fastest-way-to-flatten-un-flatten-nested-json-objects
 
 function flatten(data, sortKeysFlag) {
@@ -64,7 +74,9 @@ function unflatten(data) {
     do {
       idx = indexOf.call(p, ".", last)
       temp = p.substring(last, ~idx ? idx : undefined)
-      cur = cur[prop] || (cur[prop] = (!isNaN(parseInt(temp)) ? [] : {}))
+      if (!isPrototypePolluted(prop)) {
+        cur = cur[prop] || (cur[prop] = (!isNaN(parseInt(temp)) ? [] : {}))
+      }
       prop = temp
       last = idx + 1
     } while(idx >= 0)
