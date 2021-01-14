@@ -65,7 +65,6 @@ describe('nested-objects-util', () => {
       })
     })
 
-
     it('should prevent prototype pollution on unflattening an object', () => {
       const unflattened = nestedObjectsUtil.unflatten({
         "__proto__.polluted": "Yes! Its Polluted"
